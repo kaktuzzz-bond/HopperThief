@@ -28,7 +28,9 @@ namespace Game.Gameplay
         // }
         public void Start()
         {
-            _playerInputBroadcast.OnScreenTapped += OnScreenTapped;
+            _playerInputBroadcast.OnScreenTouchStarted += OnTouchStarted;
+            _playerInputBroadcast.OnScreenTouchFinished += OnTouchFinished;
+            _playerInputBroadcast.OnTapPerformed += OnScreenTapped;
             _playerInputBroadcast.OnScreenHeld += OnScreenHeld;
             
             _playerInputBroadcast.EnableInput();
@@ -37,19 +39,31 @@ namespace Game.Gameplay
         public void Dispose()
         {
             _playerInputBroadcast.DisableInput();
-            
-            _playerInputBroadcast.OnScreenTapped -= OnScreenTapped;
+         
+            _playerInputBroadcast.OnScreenTouchStarted -= OnTouchStarted;
+            _playerInputBroadcast.OnScreenTouchFinished -= OnTouchFinished;
+            _playerInputBroadcast.OnTapPerformed -= OnScreenTapped;
             _playerInputBroadcast.OnScreenHeld -= OnScreenHeld;
         }
 
-        private void OnScreenHeld(Vector2 startPosition, Vector2 currenPosition)
+        private void OnTouchStarted(Vector2 position)
         {
-            SendMessage($"HOLD: {startPosition} : {currenPosition}");
+            SendMessage($"START: {position}");
+        }
+        
+        private void OnTouchFinished(Vector2 position)
+        {
+            SendMessage($"FINISH: {position}");
+        }
+        
+        private void OnScreenHeld(Vector2 position)
+        {
+            SendMessage($"HOLD: {position}");
         }
 
         private void OnScreenTapped(Vector2 screenPosition)
         {
-            SendMessage($"TOUCHED: {screenPosition}");
+            SendMessage($"TAP: {screenPosition}");
         }
 
       

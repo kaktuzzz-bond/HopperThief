@@ -1,18 +1,18 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer.Unity;
 using Vector2 = UnityEngine.Vector2;
 
 namespace Game.Gameplay
 {
-    public delegate void OnScreenHeldCallback(Vector2 startPosition, Vector2 currenPosition);
-
-
     public interface IPlayerInputBroadcast
     {
-        event Action<Vector2> OnScreenTapped;
-        event OnScreenHeldCallback OnScreenHeld;
-        
+        event Action<Vector2> OnScreenTouchStarted;
+        event Action<Vector2> OnScreenTouchFinished;
+        event Action<Vector2> OnTapPerformed;
+        event Action<Vector2> OnScreenHeld;
+
         bool IsInputEnabled { get; }
 
         void EnableInput();
@@ -30,13 +30,14 @@ namespace Game.Gameplay
             _playerInput = playerInput;
         }
 
-
-        public event Action<Vector2> OnScreenTapped;
-        public event OnScreenHeldCallback OnScreenHeld;
+        public event Action<Vector2> OnScreenTouchStarted;
+        public event Action<Vector2> OnScreenTouchFinished;
+        public event Action<Vector2> OnTapPerformed;
+        public event Action<Vector2> OnScreenHeld;
 
         private bool _isInputEnabled;
-        private Vector2 _startTouchPosition;
         private bool _isHeld;
+
 
         public bool IsInputEnabled
         {
@@ -57,10 +58,15 @@ namespace Game.Gameplay
 
         private Vector2 ScreenTouchPosition => _playerInput.Touch.TouchPosition.ReadValue<Vector2>();
 
+        public void Tick() =>
+            NotifyIfScreenHeld();
+
         public void EnableInput()
         {
-            _playerInput.Touch.Tap.started += _ => _startTouchPosition = ScreenTouchPosition;
-            _playerInput.Touch.Tap.performed += _ => OnScreenTapped?.Invoke(ScreenTouchPosition);
+            _playerInput.Touch.Press.started += NotifyOnTouchStarted;
+            _playerInput.Touch.Press.canceled += NotifyOnTouchFinished;
+
+            _playerInput.Touch.Tap.performed += NotifyOnTapPerformed;
 
             _playerInput.Touch.Hold.performed += _ => _isHeld = true;
             _playerInput.Touch.Hold.canceled += _ => _isHeld = false;
@@ -74,10 +80,19 @@ namespace Game.Gameplay
         }
 
 
-        public void Tick()
+        private void NotifyOnTouchStarted(InputAction.CallbackContext _) =>
+            OnScreenTouchStarted?.Invoke(ScreenTouchPosition);
+
+        private void NotifyOnTouchFinished(InputAction.CallbackContext _) =>
+            OnScreenTouchFinished?.Invoke(ScreenTouchPosition);
+
+        private void NotifyOnTapPerformed(InputAction.CallbackContext _) =>
+            OnTapPerformed?.Invoke(ScreenTouchPosition);
+
+        private void NotifyIfScreenHeld()
         {
-            if (!_isHeld) return;
-            OnScreenHeld?.Invoke(_startTouchPosition, ScreenTouchPosition);
+            if (_isHeld)
+                OnScreenHeld?.Invoke(ScreenTouchPosition);
         }
 
         private static void SendMessage(string message) =>

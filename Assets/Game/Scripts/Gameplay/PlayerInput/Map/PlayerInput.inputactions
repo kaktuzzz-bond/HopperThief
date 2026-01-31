@@ -25,12 +25,21 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Press",
+                    "type": "PassThrough",
+                    "id": "5b8f6e8d-aaa7-411f-aeb2-694d85d1cff9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Tap",
                     "type": "PassThrough",
                     "id": "cccf9979-b52b-4597-9dfe-b4756e68c103",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 },
                 {
@@ -39,7 +48,7 @@
                     "id": "6b940c1f-4633-4162-ba50-83d23b92f5e3",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "initialStateCheck": false
                 }
             ],
@@ -74,6 +83,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c18d424-3568-49c5-851d-bc2f0ad6c602",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Press",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

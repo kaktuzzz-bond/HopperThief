@@ -411,6 +411,8 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  installers:
+  - {fileID: 11400000, guid: 03232beae2c914387a6647a58660da93, type: 2}
 --- !u!4 &208551113
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,5 @@
+using Game.Common;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -5,15 +7,12 @@ namespace Game.Gameplay
 {
     public class GameplayLifetimeScope : LifetimeScope
     {
+        [SerializeField]
+        private ScriptableObjectInstaller[] installers;
+
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<PlayerInput>(Lifetime.Singleton);
-
-            builder.UseEntryPoints(entryPoints =>
-            {
-                entryPoints.Add<PlayerInputBroadcast>();
-                entryPoints.Add<PlayerInputController>();
-            });
+            builder.InstallScriptableObjects(installers);
         }
     }
 }

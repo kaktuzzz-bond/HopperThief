@@ -1,9 +1,8 @@
 {
-    "name": "Game.App",
+    "name": "Game.Common",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:e615666f4e4e4d088e60fa61dc5be346"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
