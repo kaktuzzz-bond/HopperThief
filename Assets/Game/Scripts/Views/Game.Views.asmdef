@@ -2,7 +2,8 @@
     "name": "Game.Views",
     "rootNamespace": "",
     "references": [
-        "GUID:a947634b67a484d6b88e38d248d00722"
+        "GUID:a947634b67a484d6b88e38d248d00722",
+        "GUID:92ae926a4af74a478052f7a78f9b1ce7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
