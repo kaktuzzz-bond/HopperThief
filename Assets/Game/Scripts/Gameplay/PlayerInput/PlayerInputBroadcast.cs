@@ -6,13 +6,14 @@ using Vector2 = UnityEngine.Vector2;
 
 namespace Game.Gameplay
 {
+    public delegate void OnScreenHeldCallback(Vector2 touchPosition, Vector2 delta);
     public interface IPlayerInputBroadcast
     {
         event Action<Vector2> OnScreenTouchStarted;
         event Action<Vector2> OnScreenTouchFinished;
         event Action<Vector2> OnTapPerformed;
-        event Action<Vector2> OnScreenHeld;
-
+        event OnScreenHeldCallback OnScreenHeld;
+      
         bool IsInputEnabled { get; }
 
         void EnableInput();
@@ -33,10 +34,12 @@ namespace Game.Gameplay
         public event Action<Vector2> OnScreenTouchStarted;
         public event Action<Vector2> OnScreenTouchFinished;
         public event Action<Vector2> OnTapPerformed;
-        public event Action<Vector2> OnScreenHeld;
+        public event OnScreenHeldCallback OnScreenHeld;
+       
 
         private bool _isInputEnabled;
         private bool _isHeld;
+       
 
 
         public bool IsInputEnabled
@@ -57,6 +60,7 @@ namespace Game.Gameplay
         }
 
         private Vector2 ScreenTouchPosition => _playerInput.Touch.TouchPosition.ReadValue<Vector2>();
+        private Vector2 Delta => _playerInput.Touch.Delta.ReadValue<Vector2>();
 
         public void Tick() =>
             NotifyIfScreenHeld();
@@ -74,10 +78,8 @@ namespace Game.Gameplay
             IsInputEnabled = true;
         }
 
-        public void DisableInput()
-        {
+        public void DisableInput() =>
             IsInputEnabled = false;
-        }
 
 
         private void NotifyOnTouchStarted(InputAction.CallbackContext _) =>
@@ -91,8 +93,9 @@ namespace Game.Gameplay
 
         private void NotifyIfScreenHeld()
         {
-            if (_isHeld)
-                OnScreenHeld?.Invoke(ScreenTouchPosition);
+            if (!_isHeld) return;
+            
+            OnScreenHeld?.Invoke(ScreenTouchPosition, Delta);
         }
 
         private static void SendMessage(string message) =>
