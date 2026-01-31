@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6210557e92214151ad65301fc029eebb, type: 3}
   m_Name: BEND_StickSettings
   m_EditorClassIdentifier: 
-  tensionValue: 2
+  tensionValue: 1
   vibratoValue: 100
   shakeDuration: 0.6

@@ -13,18 +13,25 @@ namespace Game.Views
         private StickView stickView;
 
 
-        [SerializeField, MinMaxSlider(0, 90, true)]
-        private Vector2 deviationAngleMinMax = new(26.5f, 54f);
-
-        //[HideInEditorMode]
+        [SerializeField, Range(0, 90f)]
+        private float playerAngleMax = 27.5f;
+        
+        [HideInEditorMode]
         [SerializeField, Range(0, 1), OnValueChanged(nameof(UpdateAngle))]
         private float deviationAngleFactor;
+
+        
+        private void Awake()
+        {
+            stickView.SetAngle(0f);
+        }
 
         private void OnEnable()
         {
             thiefView.SetPosition(stickView.NestPoint);
+
             stickView.Bend(0f);
-            
+
             stickView.OnNestedPositionChanged += thiefView.SetPosition;
         }
 
@@ -36,15 +43,10 @@ namespace Game.Views
 
         private void UpdateAngle(float factor)
         {
-            //stick
-            var angle = Mathf.Lerp(deviationAngleMinMax.x, deviationAngleMinMax.y, factor);
-
-            stickView.SetAngle(angle);
             stickView.Bend(factor);
 
-            //thief
             var playerPos = stickView.NestPoint;
-            var playerAngle = angle - deviationAngleMinMax.x;
+            var playerAngle = Mathf.Lerp(0, playerAngleMax, factor);
 
             thiefView.SetPositionAndRotation(playerPos, playerAngle);
         }
