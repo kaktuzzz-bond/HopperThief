@@ -24,7 +24,7 @@ namespace Game.UI
 
         [Header("Settings")]
         [SerializeField]
-        private float movementRange = 50f;
+        private float movementRange = 300f;
 
         [SerializeField]
         private float animationDuration = 0.15f;
@@ -40,54 +40,49 @@ namespace Game.UI
         private VisualElement _handle;
         private VisualElement _area;
 
+        private StyleScale _idleScale;
+        private StyleScale _defaultScale;
+
         protected override string controlPathInternal
         {
             get => _controlPath;
             set => _controlPath = value;
         }
 
-        protected override void OnEnable()
+        private void Awake()
         {
-            base.OnEnable();  
-            
             var root = uiDocument.rootVisualElement;
             _area = root.Q<VisualElement>(areaName);
             _container = root.Q<VisualElement>(containerName);
             _handle = root.Q<VisualElement>(handleName);
-        
-            // Регистрация событий
+
+            // Size
+            _container.style.position = Position.Absolute;
+
+            var ringSize = movementRange * 2;
+            _container.style.width = ringSize;
+            _container.style.height = ringSize;
+
+            // Animations
+            _idleScale = new StyleScale(new Scale(idleScale));
+            _defaultScale = new StyleScale(new Scale(Vector3.one));
+            _container.style.transitionDuration = new List<TimeValue> { new(animationDuration) };
+            _container.style.transitionProperty = new List<StylePropertyName> { new("opacity"), new("scale") };
+            _container.style.transitionTimingFunction = new List<EasingFunction> { new(EasingMode.EaseOutCubic) };
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            // Events
             _area.RegisterCallback<PointerDownEvent>(OnPointerDown);
             _area.RegisterCallback<PointerMoveEvent>(OnPointerMove);
             _area.RegisterCallback<PointerUpEvent>(OnPointerUp);
-            
-            // Принудительно устанавливаем размер, если забыли в UI Builder
-            var size = movementRange * 2;
-            _container.style.width = size; 
-            _container.style.height = size;
 
-            // Убираем джойстик "в туман", чтобы он не маячил растянутым в центре
-            _container.style.position = Position.Absolute;
-            
-            // Настройка анимаций через стили
-            _container.style.transitionDuration = new List<TimeValue> { new (animationDuration) };
-
-            _container.style.transitionProperty = new List<StylePropertyName>
-            {
-                new ("opacity"),
-                new ("scale")
-            };
-            
-            // ВАЖНО: Добавляем функцию плавности (например, OutCubic для мягкого появления)
-            _container.style.transitionTimingFunction = new List<EasingFunction> { 
-                new (EasingMode.EaseOutCubic) 
-            };
-
-            // Начальное состояние (скрыт и уменьшен)
-            _container.style.opacity = 0;
-            _container.style.scale = new StyleScale(new Scale(idleScale));
-            
-            
+            HideJoystick();
         }
+
 
         protected override void OnDisable()
         {
@@ -96,22 +91,22 @@ namespace Game.UI
             _area.UnregisterCallback<PointerMoveEvent>(OnPointerMove);
             _area.UnregisterCallback<PointerUpEvent>(OnPointerUp);
         }
+
         private void OnPointerDown(PointerDownEvent evt)
         {
-            Debug.Log($"Нажата область: {evt.target}"); 
-        
+            Debug.Log($"Pressed: {evt.target}");
+
             _area.CapturePointer(evt.pointerId);
-    
+
             // Используем расчет на основе геометрии самого контейнера
             var containerWidth = _container.layout.width > 0 ? _container.layout.width : movementRange * 2;
             var containerHeight = _container.layout.height > 0 ? _container.layout.height : movementRange * 2;
 
-            _container.style.left = evt.localPosition.x - (containerWidth / 2);
-            _container.style.top = evt.localPosition.y - (containerHeight / 2);
-    
-            _container.style.opacity = 1;
-            _container.style.scale = new StyleScale(new Scale(Vector2.one));
-            
+            _container.style.left = evt.localPosition.x - containerWidth * 0.5f;
+            _container.style.top = evt.localPosition.y - containerHeight * 0.5f;
+
+            ShowJoystick();
+
             UpdateJoystick(evt.localPosition);
         }
 
@@ -139,15 +134,25 @@ namespace Game.UI
         private void OnPointerUp(PointerUpEvent evt)
         {
             if (!_area.HasPointerCapture(evt.pointerId)) return;
-            
+
             _area.ReleasePointer(evt.pointerId);
 
-            // Запускаем анимацию исчезновения
-            _container.style.opacity = 0;
-            _container.style.scale = new StyleScale(new Scale(idleScale));
+            HideJoystick();
 
             _handle.transform.position = Vector3.zero;
             SendValueToControl(Vector2.zero);
+        }
+
+        private void HideJoystick()
+        {
+            _container.style.opacity = 0;
+            _container.style.scale = _idleScale;
+        }
+
+        private void ShowJoystick()
+        {
+            _container.style.opacity = 1;
+            _container.style.scale = _defaultScale;
         }
     }
 }
