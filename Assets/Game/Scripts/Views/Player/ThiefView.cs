@@ -18,7 +18,9 @@ namespace Game.Views
             var ang = new Vector3(0, 0, angle);
             var rotation = Quaternion.Euler(ang);
 
-            body.SetPositionAndRotation(position, rotation);
+            SetPosition(position);
+            SetRotation(angle);
+            //body.SetPositionAndRotation(position, rotation);
         }
     }
 }

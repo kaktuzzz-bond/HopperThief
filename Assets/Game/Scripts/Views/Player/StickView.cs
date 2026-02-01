@@ -7,7 +7,8 @@ namespace Game.Views
 {
     public class StickView : MonoBehaviour
     {
-        private static readonly int BendValue = Animator.StringToHash("BendValue");
+        private static readonly int VerticalBend = Animator.StringToHash(nameof(VerticalBend));
+        private static readonly int HorizontalBend = Animator.StringToHash(nameof(HorizontalBend));
         public event Action<Vector3> OnNestedPositionChanged;
 
         [SerializeField]
@@ -32,12 +33,30 @@ namespace Game.Views
 
         private Tween _shakeTween;
 
+        private readonly Vector2 _idleBend = new(0.5f, 0f);
+        
+
+        private void LateUpdate()
+        {
+            if (NestPoint == _prevNestPosition) return;
+
+            OnNestedPositionChanged?.Invoke(NestPoint);
+
+            _prevNestPosition = NestPoint;
+        }
+
+        private void OnDestroy()
+        {
+            DOTween.KillAll();
+        }
+
         public void SetAngle(float angle) =>
             stick.localEulerAngles = new Vector3(0, 0, angle);
 
-        public void Bend(float factor)
+        public void Bend(Vector2 factor)
         {
-            animator.SetFloat(BendValue, factor);
+            animator.SetFloat(VerticalBend, factor.y);
+            animator.SetFloat(HorizontalBend, factor.x);
         }
 
         [Button]
@@ -61,18 +80,11 @@ namespace Game.Views
             _shakeTween.Kill();
         }
 
-        private void LateUpdate()
+        [Button]
+        public void ResetStick()
         {
-            if (NestPoint == _prevNestPosition) return;
-
-            OnNestedPositionChanged?.Invoke(NestPoint);
-
-            _prevNestPosition = NestPoint;
-        }
-
-        private void OnDestroy()
-        {
-            DOTween.KillAll();
+            SetAngle(0f);
+            Bend(_idleBend);
         }
     }
 }
