@@ -5,14 +5,7 @@ using VContainer.Unity;
 
 namespace Game.Gameplay
 {
-    public class GameplayLifetimeScope : LifetimeScope
+    public class GameplayLifetimeScope : LifetimeContext
     {
-        [SerializeField]
-        private ScriptableObjectInstaller[] installers;
-
-        protected override void Configure(IContainerBuilder builder)
-        {
-            builder.InstallScriptableObjects(installers);
-        }
     }
 }
