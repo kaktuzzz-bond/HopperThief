@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="OnScreenJoystick" src="project://database/Assets/Plugins/UI%20Toolkit/OnScreenJoystick.uxml?fileID=9197481963319205126&amp;guid=1a42465e562284f2f80a14cb5cb2bc15&amp;type=3#OnScreenJoystick" />
+    <ui:VisualElement name="Container" style="flex-grow: 1;">
+        <ui:Instance template="OnScreenJoystick" name="OnScreenJoystick" style="flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>
