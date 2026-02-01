@@ -62,9 +62,9 @@ namespace Game.Gameplay
             SendMessage($"TAP: {screenPosition}");
         }
 
-        private void OnScreenHeld(Vector2 touchPosition, Vector2 delta)
+        private void OnScreenHeld(Vector2 touchPosition, Vector2 joystickMove)
         {
-            SendMessage($"HOLD: {touchPosition} |  DELTA: {delta}");
+            SendMessage($"HOLD: {touchPosition} |  STICK: {joystickMove}");
         }
 
 

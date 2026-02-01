@@ -6,7 +6,7 @@ using Vector2 = UnityEngine.Vector2;
 
 namespace Game.Gameplay
 {
-    public delegate void OnScreenHeldCallback(Vector2 touchPosition, Vector2 delta);
+    public delegate void OnScreenHeldCallback(Vector2 touchPosition, Vector2 joystickMove);
     public interface IPlayerInputBroadcast
     {
         event Action<Vector2> OnScreenTouchStarted;
@@ -61,10 +61,18 @@ namespace Game.Gameplay
 
         private Vector2 ScreenTouchPosition => _playerInput.Touch.TouchPosition.ReadValue<Vector2>();
         private Vector2 Delta => _playerInput.Touch.Delta.ReadValue<Vector2>();
+        private Vector2 Move => _playerInput.Touch.Move.ReadValue<Vector2>();
 
         public void Tick() =>
             NotifyIfScreenHeld();
 
+        private void NotifyIfScreenHeld()
+        {
+            if (!_isHeld) return;
+            
+            OnScreenHeld?.Invoke(ScreenTouchPosition, Move);
+        }
+        
         public void EnableInput()
         {
             _playerInput.Touch.Press.started += NotifyOnTouchStarted;
@@ -91,12 +99,7 @@ namespace Game.Gameplay
         private void NotifyOnTapPerformed(InputAction.CallbackContext _) =>
             OnTapPerformed?.Invoke(ScreenTouchPosition);
 
-        private void NotifyIfScreenHeld()
-        {
-            if (!_isHeld) return;
-            
-            OnScreenHeld?.Invoke(ScreenTouchPosition, Delta);
-        }
+     
 
         private static void SendMessage(string message) =>
             Debug.Log($"<color=cyan>Player Input: <b>{message}</b></color>");
