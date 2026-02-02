@@ -12,44 +12,62 @@ namespace Game.Views
         [SerializeField]
         private StickView stickView;
         
+        [SerializeField]
+        private ShapeCompas compas;
+
+        [SerializeField, Range(-1, 1)]
+        private float deviationAngleFactorX = -0.5f;
+
         [SerializeField, Range(0, 1)]
         private float deviationAngleFactorY;
 
-        [SerializeField, Range(0, 1)]
-        private float deviationAngleFactorX = 0.5f;
-        private const float PLAYER_ANGLE_MAX = 40f;
+
+        private Vector2 Factor => new(deviationAngleFactorX, deviationAngleFactorY);
 
         private void OnValidate()
         {
-            UpdateAngle(new Vector2(deviationAngleFactorX, deviationAngleFactorY));
+            UpdateAngle(Factor);
         }
 
         [Button]
         private void Awake()
         {
             stickView.ResetStick();
-            thiefView.SetPosition(stickView.NestPoint);
+            thiefView.SetPositionAndRotation(stickView.NestPoint, Factor);
         }
 
         private void OnEnable()
         {
-            stickView.OnNestedPositionChanged += thiefView.SetPosition;
+            stickView.OnNestedPositionChanged += OnNestPositionChanged;
+            stickView.OnDirectionChanged += OnDirectionChanged;
         }
 
 
         private void OnDisable()
         {
-            stickView.OnNestedPositionChanged -= thiefView.SetPosition;
+            stickView.OnNestedPositionChanged -= OnNestPositionChanged;
+            stickView.OnDirectionChanged -= OnDirectionChanged;
         }
 
+        public void OnNestPositionChanged(Vector3 position)
+        {
+            thiefView.SetPosition(position);
+            compas.StartPosition = position;
+        }
+
+        public void OnDirectionChanged(Vector3 lookDirection)
+        {
+            thiefView.SetScale(lookDirection);
+        }
         public void UpdateAngle(Vector2 factor)
         {
             stickView.Bend(factor);
 
-            var playerPos = stickView.NestPoint;
-            var playerAngle = Mathf.Lerp(0, PLAYER_ANGLE_MAX, factor.y);
+            stickView.SetDirection(-factor.x);
 
-            thiefView.SetPositionAndRotation(playerPos, playerAngle);
+            thiefView.SetPositionAndRotation(stickView.NestPoint, factor);
         }
+        
+        
     }
 }

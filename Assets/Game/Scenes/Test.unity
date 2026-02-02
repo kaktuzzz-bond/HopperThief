@@ -210,6 +210,88 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
+--- !u!1 &77744638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77744639}
+  - component: {fileID: 77744640}
+  m_Layer: 0
+  m_Name: ShapeCompas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &77744639
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77744638}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4037547583908692859}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &77744640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77744638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f3251c45154c3cbd80189e1a44acb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useCullingMasks: 0
+  maxLength: 2
+  thicknessRange: {x: 4, y: 10}
+  offset: {x: 0, y: 1.25, z: 0}
+  direction: {x: 0, y: 1, z: 0}
+  triangleSize: {x: 1, y: 0.8}
+  cornerRoundness: 0.327
+  colorGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 0}
+    key1: {r: 1, g: 0.8507598, b: 0.08018869, a: 1}
+    key2: {r: 1, g: 0.50303197, b: 0.07075471, a: 1}
+    key3: {r: 1, g: 0.047, b: 0.111, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 19661
+    ctime1: 39321
+    ctime2: 52428
+    ctime3: 65342
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 10023
+    atime1: 53970
+    atime2: 53970
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 2
+  progress: 1
 --- !u!1 &81148109
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +384,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4037547583908692859}
     m_Modifications:
+    - target: {fileID: 1181236929584808358, guid: d37765bb20ebc40fba9496241eb02594, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1181236929584808358, guid: d37765bb20ebc40fba9496241eb02594, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -876,16 +962,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 528959739}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1892d7eb67284e8cb4aa86ccd95e3b67, type: 3}
+  m_Script: {fileID: 11500000, guid: a8fddf6d472b4e7aa41cdd04a6321637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 528959740}
+  uiCamera: {fileID: 519420031}
   areaName: TouchArea
-  containerName: JoystickBG
-  handleName: JoystickHandle
-  movementRange: 300
-  animationDuration: 0.15
-  idleScale: {x: 0.5, y: 0.5, z: 1}
+  trailExpiry: 0.15
+  thickness: 40
+  mainColor: {r: 1, g: 1, b: 1, a: 1}
   _controlPath: <Gamepad>/leftStick
 --- !u!1 &548128584
 GameObject:
@@ -1320,6 +1405,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 77744639}
   - {fileID: 142693825}
   - {fileID: 781531057}
   m_Father: {fileID: 1236252327}
@@ -1335,6 +1421,10 @@ PrefabInstance:
     - target: {fileID: 1879560073746404394, guid: 23a7d4640d7ea4f88a3071a9b57d11b9, type: 3}
       propertyPath: m_Name
       value: Thief
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551999352740838161, guid: 23a7d4640d7ea4f88a3071a9b57d11b9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6551999352740838161, guid: 23a7d4640d7ea4f88a3071a9b57d11b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1407,8 +1497,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thiefView: {fileID: 781531058}
   stickView: {fileID: 142693826}
+  compas: {fileID: 77744640}
+  deviationAngleFactorX: -0.5
   deviationAngleFactorY: 0
-  deviationAngleFactorX: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

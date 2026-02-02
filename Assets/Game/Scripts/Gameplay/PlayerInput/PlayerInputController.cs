@@ -31,6 +31,7 @@ namespace Game.Gameplay
             _playerInputBroadcast.OnScreenTouchFinished += OnTouchFinished;
             _playerInputBroadcast.OnTapPerformed += OnScreenTapped;
             _playerInputBroadcast.OnScreenHeld += OnScreenHeld;
+            _playerInputBroadcast.OnSwipeDetected += OnSwipe;
 
             _playerInputBroadcast.EnableInput();
         }
@@ -43,6 +44,12 @@ namespace Game.Gameplay
             _playerInputBroadcast.OnScreenTouchFinished -= OnTouchFinished;
             _playerInputBroadcast.OnTapPerformed -= OnScreenTapped;
             _playerInputBroadcast.OnScreenHeld -= OnScreenHeld;
+            _playerInputBroadcast.OnSwipeDetected -= OnSwipe;
+        }
+
+        private void OnSwipe(Vector2 direction)
+        {
+            SendMessage($"SWIPE: {direction}");
         }
 
 

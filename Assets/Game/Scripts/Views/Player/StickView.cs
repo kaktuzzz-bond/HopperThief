@@ -7,10 +7,6 @@ namespace Game.Views
 {
     public class StickView : MonoBehaviour
     {
-        private static readonly int VerticalBend = Animator.StringToHash(nameof(VerticalBend));
-        private static readonly int HorizontalBend = Animator.StringToHash(nameof(HorizontalBend));
-        public event Action<Vector3> OnNestedPositionChanged;
-
         [SerializeField]
         private StickSettings tapSettings;
 
@@ -27,14 +23,20 @@ namespace Game.Views
         [SerializeField]
         private Animator animator;
 
+
         private Vector3 _prevNestPosition;
-
-        public Vector3 NestPoint => nest.position;
-
         private Tween _shakeTween;
 
         private readonly Vector2 _idleBend = new(0.5f, 0f);
-        
+
+        private static readonly int VerticalBend = Animator.StringToHash(nameof(VerticalBend));
+        private static readonly int HorizontalBend = Animator.StringToHash(nameof(HorizontalBend));
+        public event Action<Vector3> OnNestedPositionChanged;
+        public event Action<Vector3> OnDirectionChanged;
+
+
+        public Vector3 NestPoint => nest.position;
+        public bool IsLeftPosition => transform.localScale.x > 0;
 
         private void LateUpdate()
         {
@@ -51,12 +53,24 @@ namespace Game.Views
         }
 
         public void SetAngle(float angle) =>
-            stick.localEulerAngles = new Vector3(0, 0, angle);
+            stick.localEulerAngles = new Vector3(0, 0, angle * transform.localScale.x);
 
         public void Bend(Vector2 factor)
         {
-            animator.SetFloat(VerticalBend, factor.y);
-            animator.SetFloat(HorizontalBend, factor.x);
+            animator.SetFloat(VerticalBend, Mathf.Abs(factor.y));
+            animator.SetFloat(HorizontalBend,  Mathf.Abs(factor.x));
+        }
+
+        public void SetDirection(float value)
+        {
+            var isLeft = value > 0;
+
+            if (isLeft == IsLeftPosition) return;
+
+            var newScale = new Vector3(isLeft ? 1f : -1f, 1, 1);
+
+            transform.localScale = newScale;
+            OnDirectionChanged?.Invoke(newScale);
         }
 
         [Button]

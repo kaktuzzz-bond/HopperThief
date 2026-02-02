@@ -7,13 +7,16 @@ using Vector2 = UnityEngine.Vector2;
 namespace Game.Gameplay
 {
     public delegate void OnScreenHeldCallback(Vector2 touchPosition, Vector2 joystickMove);
+
+
     public interface IPlayerInputBroadcast
     {
         event Action<Vector2> OnScreenTouchStarted;
         event Action<Vector2> OnScreenTouchFinished;
         event Action<Vector2> OnTapPerformed;
         event OnScreenHeldCallback OnScreenHeld;
-      
+        event Action<Vector2> OnSwipeDetected;
+
         bool IsInputEnabled { get; }
 
         void EnableInput();
@@ -26,6 +29,14 @@ namespace Game.Gameplay
     {
         private readonly PlayerInput _playerInput;
 
+        private Vector2 _startTouchPosition;
+        private Vector2 _endTouchPosition;
+
+
+        private bool _isInputEnabled;
+        private bool _isHeld;
+        private const float SWIPE_RESISTANCE_THRESHOLD = 100f;
+
         public PlayerInputBroadcast(PlayerInput playerInput)
         {
             _playerInput = playerInput;
@@ -35,11 +46,7 @@ namespace Game.Gameplay
         public event Action<Vector2> OnScreenTouchFinished;
         public event Action<Vector2> OnTapPerformed;
         public event OnScreenHeldCallback OnScreenHeld;
-       
-
-        private bool _isInputEnabled;
-        private bool _isHeld;
-       
+        public event Action<Vector2> OnSwipeDetected;
 
 
         public bool IsInputEnabled
@@ -69,10 +76,10 @@ namespace Game.Gameplay
         private void NotifyIfScreenHeld()
         {
             if (!_isHeld) return;
-            
+
             OnScreenHeld?.Invoke(ScreenTouchPosition, Move);
         }
-        
+
         public void EnableInput()
         {
             _playerInput.Touch.Press.started += NotifyOnTouchStarted;
@@ -90,16 +97,44 @@ namespace Game.Gameplay
             IsInputEnabled = false;
 
 
-        private void NotifyOnTouchStarted(InputAction.CallbackContext _) =>
-            OnScreenTouchStarted?.Invoke(ScreenTouchPosition);
+        private void NotifyOnTouchStarted(InputAction.CallbackContext _)
+        {
+            _startTouchPosition = ScreenTouchPosition;
+            OnScreenTouchStarted?.Invoke(_startTouchPosition);
+        }
 
-        private void NotifyOnTouchFinished(InputAction.CallbackContext _) =>
-            OnScreenTouchFinished?.Invoke(ScreenTouchPosition);
+        private void NotifyOnTouchFinished(InputAction.CallbackContext _)
+        {
+            _endTouchPosition = ScreenTouchPosition;
+            OnScreenTouchFinished?.Invoke(_endTouchPosition);
 
-        private void NotifyOnTapPerformed(InputAction.CallbackContext _) =>
+            DetectSwipe();
+        }
+
+        private void DetectSwipe()
+        {
+            var direction = _endTouchPosition - _startTouchPosition;
+
+            if (direction.magnitude < SWIPE_RESISTANCE_THRESHOLD) return;
+
+            var absDirectionX = Mathf.Abs(direction.x);
+            var absDirectionY = Mathf.Abs(direction.y);
+
+            if (absDirectionX > absDirectionY)
+            {
+                OnSwipeDetected?.Invoke(direction.x > 0 ? Vector2.right : Vector2.left);
+            }
+            else
+            {
+                OnSwipeDetected?.Invoke(direction.y > 0 ? Vector2.up : Vector2.down);
+            }
+        }
+
+        private void NotifyOnTapPerformed(InputAction.CallbackContext _)
+        {
             OnTapPerformed?.Invoke(ScreenTouchPosition);
+        }
 
-     
 
         private static void SendMessage(string message) =>
             Debug.Log($"<color=cyan>Player Input: <b>{message}</b></color>");
