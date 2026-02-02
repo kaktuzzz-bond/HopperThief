@@ -1,9 +1,8 @@
-using Game.Gameplay;
 using UnityEngine;
 
 namespace Game.Views
 {
-    public class GameCameraView: MonoBehaviour, IGameCamera
+    public class GameCameraView: MonoBehaviour
     {
         [SerializeField]
         private Transform target;

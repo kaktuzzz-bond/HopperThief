@@ -4,28 +4,18 @@ using VContainer.Unity;
 
 namespace Game.Gameplay
 {
-    public class PlayerInputController : IStartable, IDisposable
+    public class PlayerInputController : IInitializable, IDisposable
     {
+        private readonly IPlayer _player;
         private readonly IPlayerInputBroadcast _playerInputBroadcast;
 
-        public PlayerInputController(IPlayerInputBroadcast playerInputBroadcast)
+        public PlayerInputController(IPlayer player, IPlayerInputBroadcast playerInputBroadcast)
         {
+            _player = player;
             _playerInputBroadcast = playerInputBroadcast;
         }
 
-
-        // private void Update()
-        // {
-        //     if (!Touchscreen.current.primaryTouch.press.isPressed) return;
-        //     
-        //     var primaryTouch = Touchscreen.current.primaryTouch.position.ReadValue();
-        //     
-        //     var worldPoint = inputCamera.ScreenToWorldPoint(primaryTouch);
-        //     
-        //     Debug.Log(worldPoint);
-
-        // }
-        public void Start()
+        public void Initialize()
         {
             _playerInputBroadcast.OnScreenTouchStarted += OnTouchStarted;
             _playerInputBroadcast.OnScreenTouchFinished += OnTouchFinished;
@@ -50,6 +40,8 @@ namespace Game.Gameplay
         private void OnSwipe(Vector2 direction)
         {
             SendMessage($"SWIPE: {direction}");
+            
+            
         }
 
 

@@ -14,11 +14,8 @@ namespace Game.Gameplay
         {
             builder.Register<PlayerInput>(Lifetime.Singleton);
 
-            builder.UseEntryPoints(entryPoints =>
-            {
-                entryPoints.Add<PlayerInputBroadcast>();
-                entryPoints.Add<PlayerInputController>();
-            });
+            builder.Register<PlayerInputBroadcast>(Lifetime.Singleton)
+                   .AsImplementedInterfaces();
         }
     }
 }

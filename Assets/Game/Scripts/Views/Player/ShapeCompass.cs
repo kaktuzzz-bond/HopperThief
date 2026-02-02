@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.Views
 {
     [ExecuteAlways]
-    public class ShapeCompas : ImmediateModeShapeDrawer
+    public class ShapeCompass : ImmediateModeShapeDrawer
     {
         [Header("Line")]
         [SerializeField, Range(0f, 5f)]
@@ -16,9 +16,6 @@ namespace Game.Views
 
         [SerializeField]
         private Vector3 offset = Vector3.zero;
-
-        [SerializeField]
-        private Vector3 direction = Vector3.up;
 
         [Header("Triangle")]
         [SerializeField]
@@ -34,7 +31,7 @@ namespace Game.Views
         [SerializeField, Range(0f, 1f)]
         private float progress;
 
-        [ShowInInspector, ReadOnly]
+        private Vector3 _direction = Vector3.up;
         private Vector3 _startPosition = Vector3.zero;
 
 
@@ -58,7 +55,7 @@ namespace Game.Views
                 {
                     //line
                     var multiplier = progress * progress * progress;
-                    var endPosition = StartPosition + direction.normalized * maxLength * multiplier;
+                    var endPosition = StartPosition + _direction.normalized * maxLength * multiplier;
                     var startColor = colorGradient.Evaluate(progress - 0.5f);
                     startColor.a = 0;
                     var endColor = colorGradient.Evaluate(progress);
